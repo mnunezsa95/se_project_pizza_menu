@@ -37,12 +37,14 @@ function Menu() {
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      {numPizzas > 0 && (
+      {numPizzas > 0 ? (
         <ul className="pizzas">
           {pizzaData.map((pizza) => {
             return <Pizza pizzaObj={pizza} key={pizza?.name || pizza?._name} />;
           })}
         </ul>
+      ) : (
+        <p>We are still working on our menu. Please come back later</p>
       )}
     </main>
   );
@@ -53,6 +55,9 @@ function Menu() {
 /* ---------------------------------------------------------------------------------------------- */
 // the child component bc <Pizza/> goes inside of <Menu/>
 function Pizza(props) {
+  if (props.pizzaObj.soldOut) {
+    return null;
+  }
   return (
     <li className="pizza">
       <img src={props.pizzaObj.photoName} alt={props.pizzaObj.name}></img>
@@ -68,26 +73,33 @@ function Pizza(props) {
 /* ---------------------------------------------------------------------------------------------- */
 /*                                   Footer Functional Component                                  */
 /* ---------------------------------------------------------------------------------------------- */
+
 function Footer() {
   const hour = new Date().getHours();
   const openHour = 12;
   const closeHour = 24;
   const isOpen = hour >= openHour && hour <= closeHour; // logic to determine if restuarant is open
-  console.log(isOpen);
 
-  // the && will trigger short-circuit if isOpen is true
   return (
     <footer className="footer">
-      {isOpen && (
-        <div className="order">
-          <p>We're open until {closeHour}:00. Come visit us or order online.</p>
-          <button className="order_button" type="submit">
-            Order
-          </button>
-        </div>
+      {isOpen ? (
+        <Order closeHour={closeHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00
+        </p>
       )}
     </footer>
   );
+}
+
+function Order(props) {
+  <div className="order">
+    <p>We're open until {props.closeHour}:00. Come visit us or order online.</p>
+    <button className="order_button" type="submit">
+      Order
+    </button>
+  </div>;
 }
 
 // This is how you render the root in React V18
